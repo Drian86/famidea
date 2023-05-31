@@ -1,60 +1,73 @@
-import React, { useEffect, useState } from "react"
-import axios from "axios"
-import { useNavigate, Link } from "react-router-dom"
+import React, { useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-function Login() {
+function Signup() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-    const history=useNavigate();
+  async function submit(e) {
+    e.preventDefault();
 
+    try {
+      const response = await axios.post("http://localhost:8000/signup", {
+        email,
+        password,
+      });
 
-        const [email,setEmail]=useState('')
-        const [password,setPassword]=useState('')
+      if (response.data === "exist") {
+        setMessage("User already exists.");
+      } else if (response.data === "notexist") {
+        setMessage("User registered successfully.");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
-        async function submit(e){
-            e.preventDefault();
+  return (
+    <div className="login-container">
+      <div className="login-form">
+        <h1>Signup</h1>
 
-            try{
-                await axios.post("http://localhost:8000/signup",{
-                    email,password
-                })
-                .then(res=>{
-                    if(res.data="exist"){
-                        alert("Sucessfully registered!")
+        <form onSubmit={submit}>
+          <div className="form-group">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+            />
+          </div>
 
-                    }
-                    else if(res.data="notexist"){
-                        history("/home", {state:{id:email}})
-                    }
-                })
-                .catch(e=>{
-                    alert("wrong details")
-                    console.log(e);
-                })
+          <div className="form-group">
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+            />
+          </div>
 
+          <button type="submit">Signup</button>
+        </form>
 
-            }
-            catch(e){
-                console.log(e);
+        <br />
+        <p>{message}</p>
 
-            }
-        }
-    return (
-        <div className ="login">
-            <h1>Signup</h1>
+        <br />
+        <p>OR</p>
+        <br />
 
-            <form action="POST">
-                <input type="email" onChange={(e)=>{setEmail(e.target.value)}} placeholder="Email" name="" id="" /> 
-                <input type="password" onChange={(e)=>{setPassword(e.target.value)}} placeholder="Password" name="" id="" />  
-
-                 <input type="submit" onClick={submit} />
-            </form>
-
-            <br />
-            <p>OR</p>
-            <br />
-
-            <Link to="/">Login Page</Link>
-        </div>
-    )
+        <Link to="/">Login Page</Link>
+      </div>
+    </div>
+  );
 }
-export default Login
+
+export default Signup;

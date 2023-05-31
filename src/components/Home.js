@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Home() {
@@ -12,11 +12,11 @@ function Home() {
     const { id } = location.state;
     try {
       const response = await axios.delete(`http://localhost:8000/deleterecord/${id}`);
-      
+
       console.log(response.data); // Optional: Display the response message
       navigate("/"); // Redirect to the login page or any other page
     } catch (error) {
-      console.error('Error deleting record:', error);
+      console.error("Error deleting record:", error);
       // Handle error if necessary
     }
   };
@@ -24,34 +24,40 @@ function Home() {
   const handleUpdatePassword = async () => {
     const { id } = location.state;
     try {
-      const response = await axios.put(
-        `http://localhost:8000/updatepassword/${id}`,
-        {
-          password: newPassword,
-        }
-      );
+      const response = await axios.put(`http://localhost:8000/updatepassword/${id}`, {
+        password: newPassword,
+      });
       alert(response.data); // Display the response message
       setNewPassword(""); // Clear the input field
     } catch (error) {
-      console.error('Error updating password:', error);
+      console.error("Error updating password:", error);
       setErrorMessage("Error updating password. Please try again."); // Display error message
     }
   };
 
   return (
-    <div className="homepage">
-      <h1>Hello {location.state.id} and welcome to the homepage</h1>
-      <button onClick={handleDelete}>Delete Account</button>
+    <div className="login-container">
+      <div className="welcome-message">
+        <h1>Welcome, {location.state.id}!</h1>
+      </div>
 
-      <h2>Update Password</h2>
-      <input
-        type="password"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
-        placeholder="New Password"
-      />
-      <button onClick={handleUpdatePassword}>Update Password</button>
-      {errorMessage && <p>{errorMessage}</p>}
+      <div className="login-form password-update">
+        <h2>Update Password</h2>
+        <input
+          type="password"
+          placeholder="New Password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          required
+        />
+        <button onClick={handleUpdatePassword}>Update Password</button>
+        {errorMessage && <p>{errorMessage}</p>}
+      </div>
+
+      <div className="login-form account-delete">
+        <h2>Delete Account</h2>
+        <button onClick={handleDelete}>Delete Account</button>
+      </div>
     </div>
   );
 }

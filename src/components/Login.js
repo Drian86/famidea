@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import "./Login.css"; // Import the custom CSS file for styling
 
 function Login() {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -18,7 +19,7 @@ function Login() {
       });
 
       if (response.data === "exist") {
-        history("/home", { state: { id: email } });
+        navigate("/home", { state: { id: email } });
       } else if (response.data === "notexist") {
         setErrorMessage("User does not exist");
       }
@@ -28,38 +29,60 @@ function Login() {
     }
   }
 
+  const handleSignUp = () => {
+    navigate("/signup");
+  };
+
   return (
-    <div className="login">
-      <h1>Login</h1>
+    <div className="login-container">
+      <div className="login-form">
+        <h1>Login</h1>
 
-      {errorMessage && <p>{errorMessage}</p>}
+        {errorMessage && <p>{errorMessage}</p>}
 
-      <form action="POST">
-        <input
-          type="email"
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setErrorMessage(""); // Clear error message when input changes
-          }}
-          placeholder="Email"
-        />
-        <input
-          type="password"
-          onChange={(e) => {
-            setPassword(e.target.value);
-            setErrorMessage(""); // Clear error message when input changes
-          }}
-          placeholder="Password"
-        />
+        <form onSubmit={submit}>
+          <div className="form-group">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrorMessage("");
+              }}
+              placeholder="Enter your email"
+              required
+            />
+          </div>
 
-        <input type="submit" onClick={submit} />
-      </form>
+          <div className="form-group">
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setErrorMessage("");
+              }}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
 
-      <br />
-      <p>OR</p>
-      <br />
+          <button type="submit">Login</button>
+        </form>
 
-      <Link to="/signup">Signup Page</Link>
+        <div className="signup-link">
+          <p>Don't have an account?</p>
+          <Link to="/signup">Sign up here</Link>
+        </div>
+
+        <button className="signup-button" onClick={handleSignUp}>
+          Sign Up
+        </button>
+      </div>
     </div>
   );
 }
